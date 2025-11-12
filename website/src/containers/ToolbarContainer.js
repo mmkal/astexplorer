@@ -9,6 +9,7 @@ import {
   setParser,
   reset,
   setKeyMap,
+  setSelector,
 } from '../store/actions';
 import Toolbar from '../components/Toolbar';
 import * as selectors from '../store/selectors';
@@ -37,6 +38,8 @@ function mapStateToProps(state) {
     keyMap: selectors.getKeyMap(state),
     showTransformer: selectors.showTransformer(state),
     snippet: selectors.getRevision(state),
+    selector: selectors.getSelector(state),
+    parseResult: selectors.getParseResult(state),
   };
 }
 
@@ -59,6 +62,9 @@ function mapDispatchToProps(dispatch) {
     },
     onKeyMapChange: keyMap => {
       dispatch(setKeyMap(keyMap))
+    },
+    onSelectorChange: selector => {
+      dispatch(setSelector(selector));
     },
     onSave: () => dispatch(save(false)),
     onFork: () => dispatch(save(true)),

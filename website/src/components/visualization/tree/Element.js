@@ -131,6 +131,7 @@ const Element = React.memo(function Element({
   selected,
   onClick,
   position,
+  matchedNodes,
 }) {
   const opensByDefault = useMemo(
     () => treeAdapter.opensByDefault(value, name),
@@ -204,6 +205,7 @@ const Element = React.memo(function Element({
           parent={parent}
           onClick={clickHandler}
           position={position}
+          matchedNodes={matchedNodes}
         />
       );
     }
@@ -297,9 +299,11 @@ const Element = React.memo(function Element({
     }
   }
 
+  const isMatched = matchedNodes && matchedNodes.has(value);
   let classNames = cx({
     entry: true,
     highlighted: isInRange && (!hasChildrenInRange || !isOpen) || !isInRange && hasChildrenInRange && !isOpen,
+    'selector-matched': isMatched,
     toggable: showToggler,
     open: isOpen,
   });
@@ -331,6 +335,7 @@ const Element = React.memo(function Element({
     prevProps.onClick === nextProps.onClick &&
     prevProps.isInRange === nextProps.isInRange &&
     prevProps.hasChildrenInRange === nextProps.hasChildrenInRange &&
+    prevProps.matchedNodes === nextProps.matchedNodes &&
     //
     ((nextProps.isInRange || nextProps.hashChildrenInRange) && prevProps.position === nextProps.position);
 });
@@ -347,6 +352,7 @@ Element.propTypes = {
     PropTypes.object,
     PropTypes.array,
   ]),
+  matchedNodes: PropTypes.instanceOf(Set),
 };
 
 const NOT_COMPUTED = {};

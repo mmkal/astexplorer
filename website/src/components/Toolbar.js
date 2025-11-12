@@ -5,9 +5,10 @@ import ParserButton from './buttons/ParserButton';
 import SnippetButton from './buttons/SnippetButton';
 import TransformButton from './buttons/TransformButton';
 import KeyMapButton from './buttons/KeyMapButton';
+import SelectorButton from './buttons/SelectorButton';
 
 export default function Toolbar(props) {
-  let {parser, transformer, showTransformer} = props;
+  let {parser, transformer, showTransformer, selector, onSelectorChange, parseResult} = props;
   let parserInfo = parser.displayName;
   let transformerInfo = '';
   if (parser) {
@@ -31,6 +32,12 @@ export default function Toolbar(props) {
     transformerInfo = <span>Transformer: {transformerInfo}</span>;
   }
 
+  // Check if ESTree parser by checking if AST root has 'type' property
+  const isSelectorSupported = parseResult && 
+    parseResult.ast && 
+    typeof parseResult.ast === 'object' && 
+    parseResult.ast.type === 'Program';
+
   return (
     <div id="Toolbar">
       <h1>AST Explorer</h1>
@@ -39,6 +46,11 @@ export default function Toolbar(props) {
       <ParserButton {...props} />
       <TransformButton {...props} />
       <KeyMapButton {...props} />
+      <SelectorButton
+        selector={selector}
+        isSupported={isSelectorSupported}
+        onSelectorChange={onSelectorChange}
+      />
       <a
         style={{minWidth: 0}}
         target="_blank" rel="noopener noreferrer"
@@ -64,9 +76,12 @@ Toolbar.propTypes = {
   onShareButtonClick: PropTypes.func,
   onTransformChange: PropTypes.func,
   onKeyMapChange: PropTypes.func,
+  onSelectorChange: PropTypes.func,
   parser: PropTypes.object,
   transformer: PropTypes.object,
   showTransformer: PropTypes.bool,
   canSave: PropTypes.bool,
   canFork: PropTypes.bool,
+  selector: PropTypes.string,
+  parseResult: PropTypes.object,
 };

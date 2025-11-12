@@ -8,6 +8,7 @@ import PasteDropTargetContainer from './containers/PasteDropTargetContainer';
 import PropTypes from 'prop-types';
 import {publish} from './utils/pubsub.js';
 import * as React from 'react';
+import SelectorHighlighterContainer from './containers/SelectorHighlighterContainer';
 import SettingsDialogContainer from './containers/SettingsDialogContainer';
 import ShareDialogContainer from './containers/ShareDialogContainer';
 import SplitPane from './components/SplitPane';
@@ -37,6 +38,7 @@ function App({showTransformer, hasError}) {
   return (
     <>
       <ErrorMessageContainer />
+      <SelectorHighlighterContainer />
       <PasteDropTargetContainer id="main" className={cx({hasError})}>
         <LoadingIndicatorContainer />
         <SettingsDialogContainer />

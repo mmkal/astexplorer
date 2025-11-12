@@ -128,6 +128,7 @@ export default class Editor extends React.Component {
     if (this.props.highlight) {
       this._markerRange = null;
       this._mark = null;
+      this._selectorMarks = [];
       this._subscriptions.push(
         subscribe('HIGHLIGHT', ({range}) => {
           if (!range) {
@@ -164,6 +165,33 @@ export default class Editor extends React.Component {
             }
           }
         }),
+
+        subscribe('SELECTOR_HIGHLIGHT', ({ranges, error}) => {
+          // Clear existing selector marks
+          this._selectorMarks.forEach(mark => mark.clear());
+          this._selectorMarks = [];
+
+          if (error || !ranges || ranges.length === 0) {
+            return;
+          }
+
+          let doc = this.codeMirror.getDoc();
+          for (const range of ranges) {
+            if (!range || !Array.isArray(range) || range.length !== 2) {
+              continue;
+            }
+            let [start, end] = range.map(index => this._posFromIndex(doc, index));
+            if (!start || !end) {
+              continue;
+            }
+            const mark = this.codeMirror.markText(
+              start,
+              end,
+              {className: 'selector-matched'},
+            );
+            this._selectorMarks.push(mark);
+          }
+        }),
       );
     }
 
@@ -177,6 +205,10 @@ export default class Editor extends React.Component {
     this._unbindHandlers();
     this._markerRange = null;
     this._mark = null;
+    if (this._selectorMarks) {
+      this._selectorMarks.forEach(mark => mark.clear());
+      this._selectorMarks = [];
+    }
     let container = this.container;
     container.removeChild(container.children[0]);
     this.codeMirror = null;

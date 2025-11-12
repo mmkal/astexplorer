@@ -1,14 +1,14 @@
 import Element from './tree/Element';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {publish} from '../../utils/pubsub.js';
+import {publish, subscribe} from '../../utils/pubsub.js';
 import {treeAdapterFromParseResult} from '../../core/TreeAdapter.js';
 import {SelectedNodeProvider} from './SelectedNodeContext.js';
 import focusNodes from './focusNodes.js'
 
 import './css/tree.css'
 
-const {useReducer, useMemo, useRef, useLayoutEffect} = React;
+const {useReducer, useMemo, useRef, useLayoutEffect, useState, useEffect} = React;
 
 const STORAGE_KEY = 'tree_settings';
 
@@ -45,11 +45,19 @@ function makeCheckbox(name, settings, updateSettings) {
 
 export default function Tree({parseResult, position}) {
   const [settings, updateSettings] = useReducer(reducer, null, initSettings);
+  const [matchedNodes, setMatchedNodes] = useState(new Set());
   const treeAdapter = useMemo(
     () => treeAdapterFromParseResult(parseResult, settings),
     [parseResult.treeAdapter, settings],
   );
   const rootElement = useRef();
+
+  useEffect(() => {
+    const unsubscribe = subscribe('SELECTOR_HIGHLIGHT', ({matchedNodes: nodes}) => {
+      setMatchedNodes(nodes || new Set());
+    });
+    return unsubscribe;
+  }, []);
 
   focusNodes('init');
   useLayoutEffect(() => {
@@ -82,6 +90,7 @@ export default function Tree({parseResult, position}) {
             treeAdapter={treeAdapter}
             autofocus={settings.autofocus}
             position={position}
+            matchedNodes={matchedNodes}
           />
         </SelectedNodeProvider>
       </ul>

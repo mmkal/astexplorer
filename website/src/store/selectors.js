@@ -78,6 +78,10 @@ export function getKeyMap (state) {
   return state.workbench.keyMap;
 }
 
+export function getSelector(state) {
+  return state.selector;
+}
+
 
 const isCodeDirty = createSelector(
   [getCode, getInitialCode],

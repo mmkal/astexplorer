@@ -15,6 +15,7 @@ const initialState = {
   cursor: null,
   error: null,
   showTransformPanel: false,
+  selector: '',
 
   // Snippet related state
   selectedRevision: null,
@@ -90,6 +91,7 @@ export function astexplorer(state=initialState, action) {
     cursor: cursor(state.cursor, action),
     error: error(state.error, action),
     showTransformPanel: showTransformPanel(state.showTransformPanel, action),
+    selector: selector(state.selector, action),
 
     // Snippet related state
     activeRevision: activeRevision(state.activeRevision, action),
@@ -420,6 +422,19 @@ function activeRevision(state=initialState.selectedRevision, action) {
     case actions.CLEAR_SNIPPET:
     case actions.RESET:
       return null;
+    default:
+      return state;
+  }
+}
+
+function selector(state=initialState.selector, action) {
+  switch (action.type) {
+    case actions.SET_SELECTOR:
+      return action.selector;
+    case actions.CLEAR_SELECTOR:
+    case actions.RESET:
+    case actions.SELECT_CATEGORY:
+      return '';
     default:
       return state;
   }
