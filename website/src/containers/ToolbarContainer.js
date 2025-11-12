@@ -14,7 +14,17 @@ import Toolbar from '../components/Toolbar';
 import * as selectors from '../store/selectors';
 
 function mapStateToProps(state) {
-  const parser = selectors.getParser(state);
+  const _parser = selectors.getParser(state);
+  const parser = {
+    ..._parser,
+    category: {
+      ..._parser.category,
+      parsers: _parser.category.parsers.slice().sort((a, b) => {
+        const scores = [a, b].map(p => p.displayName.includes('@typescript-eslint') ? 0 : 1)
+        return scores[0] - scores[1];
+      })
+    }
+  }
 
   return {
     forking: selectors.isForking(state),
