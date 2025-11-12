@@ -32,7 +32,7 @@ export default class SelectorButton extends React.Component {
         <i className="fa fa-lg fa-search fa-fw" title="ESLint Selector" />
         <input
           type="text"
-          placeholder="ESLint selector! (e.g., Identifier)"
+          placeholder="ESLint selector (e.g., Identifier)"
           value={selector || ''}
           onChange={this._onInputChange}
           onKeyDown={this._onKeyDown}
