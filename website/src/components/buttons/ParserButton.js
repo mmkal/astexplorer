@@ -14,7 +14,10 @@ export default class ParserButton extends React.Component {
   }
 
   render() {
-    const parsers = this.props.category.parsers.filter(p => p.showInMenu);
+    const parsers = this.props.category.parsers.filter(p => p.showInMenu).sort((a, b) => {
+      const scores = [a, b].map(p => p.displayName.includes('@typescript-eslint') ? 0 : 1)
+      return scores[0] - scores[1];
+    });
     return (
       <div className="button menuButton">
         <span>
