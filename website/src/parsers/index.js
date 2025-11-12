@@ -63,7 +63,8 @@ export function getDefaultCategory() {
 }
 
 export function getDefaultParser(category = getDefaultCategory()) {
-  return category.parsers.filter(p => p.showInMenu)[0];
+  const shownParsers = category.parsers.filter(p => p.showInMenu);
+  return shownParsers.find(p => p.id === category.defaultParserId) || shownParsers[0];
 }
 
 export function getCategoryByID(id) {
